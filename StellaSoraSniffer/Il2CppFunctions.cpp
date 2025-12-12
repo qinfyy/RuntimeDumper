@@ -11,15 +11,14 @@ void InitIl2CppFunctions()
 		return;
     }
 
-    il2cpp_domain_get = (t_il2cpp_domain_get)GetProcAddress(hGameAssembly, "il2cpp_domain_get");
-    il2cpp_domain_get_assemblies = (t_il2cpp_domain_get_assemblies)GetProcAddress(hGameAssembly, "il2cpp_domain_get_assemblies");
-    il2cpp_assembly_get_image = (t_il2cpp_assembly_get_image)GetProcAddress(hGameAssembly, "il2cpp_assembly_get_image");
-    il2cpp_thread_attach = (t_il2cpp_thread_attach)GetProcAddress(hGameAssembly, "il2cpp_thread_attach");
+#define DO_API(r, n, p) \
+        n = (r (*) p) GetProcAddress(hGameAssembly, #n); \
+        DebugPrintA("[IL2CPP] %-55s -> %p\n", #n, n);
 
-	DebugPrintA("[INFO] il2cpp_domain_get: %p\n", il2cpp_domain_get);
-    DebugPrintA("[INFO] il2cpp_domain_get_assemblies: %p\n", il2cpp_domain_get_assemblies);
-    DebugPrintA("[INFO] il2cpp_assembly_get_image: %p\n", il2cpp_assembly_get_image);
-    DebugPrintA("[INFO] il2cpp_thread_attach: %p\n", il2cpp_thread_attach);
+#define DO_API_NO_RETURN(r, n, p) DO_API(r, n, p)
+#include "il2cpp-api-functions.h"
+#undef DO_API
+#undef DO_API_NO_RETURN
 }
 
 bool AttachIl2Cpp(Il2CppDomain*& outDomain, Il2CppThread*& outThread)

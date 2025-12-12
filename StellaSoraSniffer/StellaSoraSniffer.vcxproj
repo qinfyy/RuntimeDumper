@@ -73,22 +73,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(SolutionDir)vendor\detours\lib.X86;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)vendor\detours\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\detours\include;$(ProjectDir)il2cpp;$(IncludePath)</IncludePath>
     <TargetName>version</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(SolutionDir)vendor\detours\lib.X86;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)vendor\detours\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\detours\include;$(ProjectDir)il2cpp;$(IncludePath)</IncludePath>
     <TargetName>version</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(SolutionDir)vendor\detours\lib.X64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)vendor\detours\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\detours\include;$(ProjectDir)il2cpp;$(IncludePath)</IncludePath>
     <TargetName>version</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(SolutionDir)vendor\detours\lib.X64;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)vendor\detours\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\detours\include;$(ProjectDir)il2cpp;$(IncludePath)</IncludePath>
     <TargetName>version</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
