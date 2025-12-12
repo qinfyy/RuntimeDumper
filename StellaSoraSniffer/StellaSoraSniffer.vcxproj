@@ -172,6 +172,23 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="HookManager.h" />
     <ClInclude Include="Hooks.h" />
+    <ClInclude Include="Il2CppFunctions.h" />
+    <ClInclude Include="il2cpp\il2cpp-api-functions.h" />
+    <ClInclude Include="il2cpp\il2cpp-api-types.h" />
+    <ClInclude Include="il2cpp\il2cpp-blob.h" />
+    <ClInclude Include="il2cpp\il2cpp-class-internals.h" />
+    <ClInclude Include="il2cpp\il2cpp-config-api.h" />
+    <ClInclude Include="il2cpp\il2cpp-config.h" />
+    <ClInclude Include="il2cpp\il2cpp-metadata.h" />
+    <ClInclude Include="il2cpp\il2cpp-mono-api-functions.h" />
+    <ClInclude Include="il2cpp\il2cpp-object-internals.h" />
+    <ClInclude Include="il2cpp\il2cpp-pinvoke-support.h" />
+    <ClInclude Include="il2cpp\il2cpp-runtime-metadata.h" />
+    <ClInclude Include="il2cpp\il2cpp-sanitizers.h" />
+    <ClInclude Include="il2cpp\il2cpp-string-types.h" />
+    <ClInclude Include="il2cpp\il2cpp-tabledefs.h" />
+    <ClInclude Include="il2cpp\il2cpp-tokentype.h" />
+    <ClInclude Include="il2cpp\il2cpp-windowsruntime-types.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrintHelper.h" />
     <ClInclude Include="Types.h" />
@@ -183,6 +200,7 @@
     <ClCompile Include="FileWriter.cpp" />
     <ClCompile Include="HookManager.cpp" />
     <ClCompile Include="Hooks.cpp" />
+    <ClCompile Include="Il2CppFunctions.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

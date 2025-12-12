@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\il2cpp">
+      <UniqueIdentifier>{b2cf3181-a90b-4611-a641-0ff125ac5a3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -42,6 +45,57 @@
     <ClInclude Include="FileWriter.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Il2CppFunctions.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-api-functions.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-api-types.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-blob.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-class-internals.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-config.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-config-api.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-metadata.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-mono-api-functions.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-object-internals.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-pinvoke-support.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-runtime-metadata.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-sanitizers.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-string-types.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-tabledefs.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-tokentype.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\il2cpp-windowsruntime-types.h">
+      <Filter>头文件\il2cpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -66,6 +120,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="FileWriter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Il2CppFunctions.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

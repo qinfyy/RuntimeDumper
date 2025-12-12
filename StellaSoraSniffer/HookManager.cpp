@@ -3,6 +3,7 @@
 #include "Hooks.h"
 #include "PrintHelper.h"
 #include <detours.h>
+#include "Il2CppFunctions.h"
 
 //const uintptr_t RVA_get_ClientPublishChannelName = 0x1297B40;
 //const uintptr_t RVA_ClientConfig_get_ServerMetaKey = 0x12986E0;
@@ -47,6 +48,17 @@ DWORD WINAPI WaitForGAModule(LPVOID) {
     while (!GetModuleHandleA("GameAssembly.dll")) Sleep(200);
 
     DebugPrintLockA("[INFO] GameAssembly.dll loaded, installing hooks...\n");
-    InstallHooks();
+    //InstallHooks();
+
+    Sleep(5000);
+    InitIl2CppFunctions();
+    Il2CppDomain* domain = nullptr;
+    Il2CppThread* thread = nullptr;
+    if (!AttachIl2Cpp(domain, thread))
+    {
+        return 1;
+    }
+
+    PrintAllImageNames();
     return 0;
 }
