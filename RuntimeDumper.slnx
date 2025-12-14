@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="StellaSoraSniffer/StellaSoraSniffer.vcxproj" Id="879302dd-f0e8-4b96-9b8d-132f642fc801" />
+  <Project Path="RuntimeDumper/RuntimeDumper.vcxproj" Id="879302dd-f0e8-4b96-9b8d-132f642fc801" />
 </Solution>

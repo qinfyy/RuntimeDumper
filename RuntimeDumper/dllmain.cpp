@@ -2,7 +2,7 @@
 #include "pch.h"
 #include <string>
 #include "Version.h"
-#include "HookManager.h"
+#include "Initializer.h"
 
 bool IsUnityCrashHandler()
 {
@@ -42,7 +42,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     case DLL_THREAD_DETACH:
         break;
     case DLL_PROCESS_DETACH:
-        UninstallHooks();
         break;
     }
     return TRUE;

@@ -33,16 +33,7 @@
     <ClInclude Include="Util.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Hooks.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="HookManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FileWriter.h">
+    <ClInclude Include="Initializer.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Il2CppFunctions.h">
@@ -96,6 +87,9 @@
     <ClInclude Include="il2cpp\il2cpp-windowsruntime-types.h">
       <Filter>头文件\il2cpp</Filter>
     </ClInclude>
+    <ClInclude Include="Il2CppDumper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -113,16 +107,13 @@
     <ClCompile Include="Util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Hooks.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HookManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FileWriter.cpp">
+    <ClCompile Include="Initializer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Il2CppFunctions.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Il2CppDumper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

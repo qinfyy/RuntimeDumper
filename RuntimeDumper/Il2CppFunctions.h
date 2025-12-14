@@ -11,5 +11,3 @@
 void InitIl2CppFunctions();
 
 bool AttachIl2Cpp(Il2CppDomain*& outDomain, Il2CppThread*& outThread);
-
-void PrintAllImageNames();
