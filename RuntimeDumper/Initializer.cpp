@@ -44,7 +44,6 @@ DWORD WINAPI WaitForGAModule(LPVOID) {
         return 1;
     }
 
-    //TestPrintAllImageNames();
     DumpCs(".\\output\\dump.cs");
     return 0;
 }

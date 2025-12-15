@@ -88,10 +88,11 @@ std::string GetFieldModifier(const FieldInfo* field)
         rets += "protected internal ";
         break;
     }
+
     if (attrs & FIELD_ATTRIBUTE_LITERAL) {
         rets += "const ";
     }
-    else 
+    else
     {
         if (attrs & FIELD_ATTRIBUTE_STATIC) {
             rets += "static ";
@@ -100,6 +101,7 @@ std::string GetFieldModifier(const FieldInfo* field)
             rets += "readonly ";
         }
     }
+
     return rets;
 }
 
@@ -170,6 +172,26 @@ std::string GetClassModifier(Il2CppClass* klass)
     }
     else {
         outPut << "class ";
+    }
+
+    return outPut.str();
+}
+
+std::string GetIl2CppClassName(Il2CppClass* klass) {
+    std::stringstream outPut;
+    const char* klassName = il2cpp_class_get_name(klass);
+    if (strchr(klassName, '`')) {
+        int numArgs = klassName[strlen(klassName) - 1] - '0';
+        std::string name(klassName, strlen(klassName) - 2);
+        outPut << name << "<";
+        for (int i = 0; i < numArgs - 1; i++) {
+            outPut << "T" << i << ", ";
+        }
+
+        outPut << "T" << numArgs - 1 << ">";
+    }
+    else {
+        outPut << klassName;
     }
 
     return outPut.str();
@@ -468,6 +490,43 @@ void DumpFields(std::ostream& os, Il2CppClass* klass)
     os << "\n";
 }
 
+void DumpPropertys(std::ostream& os, Il2CppClass* klass) {
+    os << "\t// Properties\n";
+    void* iter = nullptr;
+    while (auto prop = il2cpp_class_get_properties(klass, &iter)) {
+        // TODO attribute
+        auto get = prop->get;
+        auto set = prop->set;
+        auto propName = prop->name;
+        os << "\t";
+        const Il2CppType* propType = nullptr;
+        if (get) {
+            os << GetMethodModifiers(get->flags);
+            propType = il2cpp_method_get_return_type(get);
+        }
+        else if (set) {
+            os << GetMethodModifiers(set->flags);
+            propType = il2cpp_method_get_param(set, 0);
+        }
+        if (propType) {
+            os << GetIl2CppClassName(il2cpp_class_from_type(propType)) << " " << propName << " { ";
+            if (get) {
+                os << "get; ";
+            }
+            if (set) {
+                os << "set; ";
+            }
+            os << "}\n";
+        }
+        else {
+            if (propName) {
+                os << " // unknown property " << propName;
+            }
+        }
+    }
+    os << "\n";
+}
+
 bool Il2CppTypeIsByref(const Il2CppType* type) {
     auto byref = type->byref;
     if (il2cpp_type_is_byref) {
@@ -513,7 +572,7 @@ void DumpMethods(std::ostream& os, Il2CppClass* klass) {
         auto returnType = method->return_type;
         auto flags = method->flags;
         std::string ret = GetTypeName(returnType);
-        std::string modifier = GetMethodModifiers(method->flags);
+        std::string modifier = GetMethodModifiers(flags);
 		std::string methodName = method->name;
 
         os << "\t" << modifier;
@@ -540,12 +599,12 @@ void DumpMethods(std::ostream& os, Il2CppClass* klass) {
     }
 }
 
-void DumpClass(std::ostream& outPut, Il2CppClass* klass, size_t tdi)
+void DumpClass(std::ostream& os, Il2CppClass* klass, size_t tdi)
 {
     if (klass->enumtype)
     {
         DebugPrintA("[DumpCs] Dumping enum: %s\n", klass->name);
-        DumpEnum(outPut, klass, tdi);
+        DumpEnum(os, klass, tdi);
         return;
     }
 
@@ -554,12 +613,12 @@ void DumpClass(std::ostream& outPut, Il2CppClass* klass, size_t tdi)
     const char* name = klass->name;
     const char* nsp = klass->namespaze;
 
-    outPut << "// Assembly: " << klass->image->name << "\n";
+    os << "// Assembly: " << klass->image->name << "\n";
 
     if (nsp && nsp[0])
-        outPut << "// Namespace: " << nsp << "\n";
+        os << "// Namespace: " << nsp << "\n";
     else
-        outPut << "// Namespace:\n";
+        os << "// Namespace:\n";
 
     std::vector<std::string> extends;
 
@@ -576,30 +635,40 @@ void DumpClass(std::ostream& outPut, Il2CppClass* klass, size_t tdi)
         }
     }
 
-    if (klass->interfaces_count > 0 && klass->implementedInterfaces) {
-        for (uint16_t i = 0; i < klass->interfaces_count; ++i) {
-            Il2CppClass* interfaceClass = klass->implementedInterfaces[i];
-            if (interfaceClass && interfaceClass->name) {
-                extends.emplace_back(interfaceClass->name);
+    if (il2cpp_class_get_interfaces) {
+        void* iter = nullptr;
+        while (auto itf = il2cpp_class_get_interfaces(klass, &iter)) {
+            extends.emplace_back(itf->name);
+        }
+    }
+    else {
+        // Fallback method if il2cpp_class_get_interfaces is not available
+        if (klass->interfaces_count > 0 && klass->implementedInterfaces) {
+            for (uint16_t i = 0; i < klass->interfaces_count; ++i) {
+                Il2CppClass* interfaceClass = klass->implementedInterfaces[i];
+                if (interfaceClass && interfaceClass->name) {
+                    extends.emplace_back(interfaceClass->name);
+                }
             }
         }
     }
-
-    outPut << GetClassModifier(klass) << name;
+    
+    os << GetClassModifier(klass) << name;
 
     if (!extends.empty()) {
-        outPut << " : " << extends[0];
+        os << " : " << extends[0];
         for (size_t i = 1; i < extends.size(); ++i) {
-            outPut << ", " << extends[i];
+            os << ", " << extends[i];
         }
     }
 
-    outPut << " // TypeDefIndex: " << tdi << "\n" << "{\n";
+    os << " // TypeDefIndex: " << tdi << "\n" << "{\n";
 
-    DumpFields(outPut, klass);
-    DumpMethods(outPut, klass);
+    DumpFields(os, klass);
+    DumpPropertys(os, klass);
+    DumpMethods(os, klass);
 
-    outPut << "}\n\n";
+    os << "}\n\n";
 }
 
 void DumpClasses(std::ostream& os)
