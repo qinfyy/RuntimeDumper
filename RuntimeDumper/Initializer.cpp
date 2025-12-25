@@ -33,7 +33,7 @@ DWORD WINAPI WaitForGAModule(LPVOID) {
         Sleep(200);
     }
 
-    DebugPrintLockA("[INFO] GameAssembly.dll loaded, installing hooks...\n");
+    DebugPrintLockA("[INFO] GameAssembly.dll loaded, start dump...\n");
 
     Sleep(5000);
     InitIl2CppFunctions();

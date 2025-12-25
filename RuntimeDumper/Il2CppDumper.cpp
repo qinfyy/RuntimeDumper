@@ -673,6 +673,8 @@ void DumpClass(std::ostream& os, Il2CppClass* klass, size_t tdi)
 
 void DumpClasses(std::ostream& os)
 {
+    il2cpp_gc_disable();
+
     Il2CppDomain* domain = il2cpp_domain_get();
     size_t assemblyCount = 0;
     const Il2CppAssembly** assemblies = il2cpp_domain_get_assemblies(domain, &assemblyCount);
