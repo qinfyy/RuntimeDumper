@@ -188,6 +188,7 @@
     <ClInclude Include="il2cpp\il2cpp-tabledefs.h" />
     <ClInclude Include="il2cpp\il2cpp-tokentype.h" />
     <ClInclude Include="il2cpp\il2cpp-windowsruntime-types.h" />
+    <ClInclude Include="JsonGenerator.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrintHelper.h" />
     <ClInclude Include="Util.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Initializer.cpp" />
     <ClCompile Include="Il2CppDumper.cpp" />
     <ClCompile Include="Il2CppFunctions.cpp" />
+    <ClCompile Include="JsonGenerator.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

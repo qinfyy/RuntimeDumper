@@ -1,3 +1,3 @@
 ﻿#pragma once
 
-DWORD WINAPI WaitForGAModule(LPVOID);
+DWORD WINAPI MainThread(LPVOID);

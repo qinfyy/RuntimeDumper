@@ -565,7 +565,7 @@ void DumpMethods(std::ostream& os, Il2CppClass* klass) {
 
     while ((method = il2cpp_class_get_methods(klass, &iter))) {
         uintptr_t va = (uintptr_t)method->methodPointer;
-        uintptr_t rva = va - (uintptr_t)GetModuleHandle(L"GameAssembly.dll");
+        uintptr_t rva = va - GetModuleBase();
 
         os << "\t// RVA: 0x" << std::hex << rva << " VA: 0x" << va << std::dec << " // Slot: " << method->slot << "\n";
 

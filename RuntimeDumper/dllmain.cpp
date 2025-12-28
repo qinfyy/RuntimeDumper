@@ -35,7 +35,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
         }
 
         LoadVersionDll();
-        CreateThread(NULL, 0, WaitForGAModule, NULL, 0, NULL);
+        CreateThread(NULL, 0, MainThread, NULL, 0, NULL);
         break;
     case DLL_THREAD_ATTACH:
         break;

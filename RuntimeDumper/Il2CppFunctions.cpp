@@ -39,3 +39,9 @@ bool AttachIl2Cpp(Il2CppDomain*& outDomain, Il2CppThread*& outThread)
 
     return true;
 }
+
+uintptr_t GetModuleBase()
+{
+    HMODULE mod = GetModuleHandleA("GameAssembly.dll");
+    return reinterpret_cast<uintptr_t>(mod);
+}

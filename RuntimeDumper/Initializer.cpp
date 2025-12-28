@@ -3,6 +3,7 @@
 #include "PrintHelper.h"
 #include "Il2CppFunctions.h"
 #include "Il2CppDumper.h"
+#include "JsonGenerator.h"
 
 void TestPrintAllImageNames()
 {
@@ -26,14 +27,14 @@ void TestPrintAllImageNames()
     }
 }
 
-DWORD WINAPI WaitForGAModule(LPVOID) {
+DWORD WINAPI MainThread(LPVOID) {
     DebugPrintLockA("[INFO] Waiting for GameAssembly.dll...\n");
 
     while (!GetModuleHandle(L"GameAssembly.dll")) {
         Sleep(200);
     }
 
-    DebugPrintLockA("[INFO] GameAssembly.dll loaded, start dump...\n");
+    DebugPrintLockA("[INFO] GameAssembly.dll loaded, Starting dump...\n");
 
     Sleep(5000);
     InitIl2CppFunctions();
@@ -45,5 +46,7 @@ DWORD WINAPI WaitForGAModule(LPVOID) {
     }
 
     DumpCs(".\\output\\dump.cs");
+    DumpJsonOutputToFile(".\\output\\script.json");
+
     return 0;
 }
