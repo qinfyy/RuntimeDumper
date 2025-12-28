@@ -34,7 +34,7 @@ DWORD WINAPI MainThread(LPVOID) {
         Sleep(200);
     }
 
-    DebugPrintLockA("[INFO] GameAssembly.dll loaded, Starting dump...\n");
+    DebugPrintLockA("[INFO] GameAssembly.dll loaded, Starting dump ...\n");
 
     Sleep(5000);
     InitIl2CppFunctions();

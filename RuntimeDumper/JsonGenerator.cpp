@@ -102,8 +102,7 @@ void WriteScriptMethods(std::ostringstream& os)
                 uintptr_t va = reinterpret_cast<uintptr_t>(method->methodPointer);
                 uint64_t rva = (va >= moduleBase) ? (va - moduleBase) : va;
                 std::string name = AsciiEscapeToEscapeLiterals(BuildMethodName(klass, method));
-				std::string signature = BuildTypeSignature(method);
-                DebugPrintA("[JsonGen] ScriptMethod %s\n", name.c_str());
+                std::string signature = BuildTypeSignature(method);
 
                 os << "\t{\n";
                 os << "\t\t\"Address\": " << rva << ",\n";
@@ -118,6 +117,102 @@ void WriteScriptMethods(std::ostringstream& os)
     os << "\n\t]";
 }
 
+void WriteScriptMetadata(std::ostringstream& os)
+{
+    Il2CppDomain* domain = il2cpp_domain_get();
+    if (!domain) { os << "[]"; return; }
+
+    size_t assemblyCount = 0;
+    const Il2CppAssembly** assemblies = il2cpp_domain_get_assemblies(domain, &assemblyCount);
+
+    os << "[\n";
+    bool firstEntry = true;
+
+    for (size_t a = 0; a < assemblyCount; ++a)
+    {
+        const Il2CppImage* image = il2cpp_assembly_get_image(assemblies[a]);
+        if (!image) continue;
+
+        size_t classCount = il2cpp_image_get_class_count(image);
+        for (size_t c = 0; c < classCount; ++c)
+        {
+            Il2CppClass* klass = const_cast<Il2CppClass*>(il2cpp_image_get_class(image, c));
+            if (!klass) continue;
+
+            if (!firstEntry) os << ",\n";
+            firstEntry = false;
+
+            uintptr_t addr = reinterpret_cast<uintptr_t>(klass);
+            uintptr_t moduleBase = GetModuleBase();
+            uint64_t rva = (addr >= moduleBase) ? (addr - moduleBase) : addr;
+
+            const char* className = il2cpp_class_get_name(klass);
+            if (!className) className = "UnknownClass";
+
+            os << "\t{\n";
+            os << "\t\t\"Address\": " << rva << ",\n";
+            os << "\t\t\"Name\": \"" << AsciiEscapeToEscapeLiterals(std::string(className) + "_TypeInfo") << "\",\n";
+            os << "\t\t\"Signature\": \"" << AsciiEscapeToEscapeLiterals(std::string(className) + "_c*") << "\"\n";
+            os << "\t}";
+        }
+    }
+
+    os << "\n\t]";
+}
+
+void WriteMethodRefs(std::ostringstream& os)
+{
+    uintptr_t moduleBase = GetModuleBase();
+
+    Il2CppDomain* domain = il2cpp_domain_get();
+    if (!domain) { os << "[]"; return; }
+
+    size_t assemblyCount = 0;
+    const Il2CppAssembly** assemblies = il2cpp_domain_get_assemblies(domain, &assemblyCount);
+
+    os << "[\n";
+    bool firstEntry = true;
+
+    for (size_t a = 0; a < assemblyCount; ++a)
+    {
+        const Il2CppImage* image = il2cpp_assembly_get_image(assemblies[a]);
+        if (!image) continue;
+
+        size_t classCount = il2cpp_image_get_class_count(image);
+        for (size_t c = 0; c < classCount; ++c)
+        {
+            Il2CppClass* klass = const_cast<Il2CppClass*>(il2cpp_image_get_class(image, c));
+            if (!klass) continue;
+
+            void* iter = nullptr;
+            const MethodInfo* method = nullptr;
+            while ((method = il2cpp_class_get_methods(klass, &iter)))
+            {
+                if (!method->methodPointer) continue;
+
+                uintptr_t va = (uintptr_t)method->methodPointer;
+                uint64_t methodRva = (va >= moduleBase) ? (va - moduleBase) : 0ULL;
+
+                const char* className = il2cpp_class_get_name(klass);
+                const char* methodName = il2cpp_method_get_name(method);
+                if (!className) className = "UnknownClass";
+                if (!methodName) methodName = "UnknownMethod";
+
+                if (!firstEntry) os << ",\n";
+                firstEntry = false;
+
+                os << "\t{\n";
+                os << "\t\t\"Address\": " << 0 << ",\n";
+                os << "\t\t\"Name\": \"" << AsciiEscapeToEscapeLiterals(std::string(className) + "_" + methodName) << "\",\n";
+                os << "\t\t\"MethodAddress\": " << methodRva << "\n";
+                os << "\t}";
+            }
+        }
+    }
+
+    os << "\n]";
+}
+
 void DumpJsonOutput(std::ostringstream& os)
 {
     os << "{\n";
@@ -125,14 +220,19 @@ void DumpJsonOutput(std::ostringstream& os)
     os << "\t\"ScriptMethod\": ";
     WriteScriptMethods(os);
     os << ",\n";
-    os << "\t\"ScriptString\": []";
+
+    os << "\t\"ScriptString\": [],\n";
+
+    os << "\t\"ScriptMetadata\": ";
+    WriteScriptMetadata(os);
     os << ",\n";
-    os << "\t\"ScriptMetadata\": []";
+
+    os << "\t\"ScriptMetadataMethod\": ";
+	WriteMethodRefs(os);
     os << ",\n";
-    os << "\t\"ScriptMetadataMethod\": []";
-    os << ",\n";
-    os << "\t\"Addresses\": []";
-    os << "\n";
+
+    os << "\t\"Addresses\": []\n";
+
     os << "}\n";
 }
 
