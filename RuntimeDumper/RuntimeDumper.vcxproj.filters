@@ -16,6 +16,9 @@
     <Filter Include="头文件\il2cpp">
       <UniqueIdentifier>{b2cf3181-a90b-4611-a641-0ff125ac5a3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\il2cpp\vm">
+      <UniqueIdentifier>{81f265c9-c33f-4c1f-b88b-6ed397a5d9ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -93,6 +96,12 @@
     <ClInclude Include="JsonGenerator.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MetaDumper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="il2cpp\vm\GlobalMetadataFileInternals.h">
+      <Filter>头文件\il2cpp\vm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -120,6 +129,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="JsonGenerator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MetaDumper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

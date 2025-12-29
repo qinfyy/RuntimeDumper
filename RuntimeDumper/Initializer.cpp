@@ -4,6 +4,7 @@
 #include "Il2CppFunctions.h"
 #include "Il2CppDumper.h"
 #include "JsonGenerator.h"
+#include "MetaDumper.h"
 
 void TestPrintAllImageNames()
 {
@@ -28,13 +29,14 @@ void TestPrintAllImageNames()
 }
 
 DWORD WINAPI MainThread(LPVOID) {
-    DebugPrintLockA("[INFO] Waiting for GameAssembly.dll...\n");
+    DebugPrintA("[INFO] RuntimeDumper\n");
+    DebugPrintA("[INFO] Waiting for GameAssembly.dll...\n");
 
     while (!GetModuleHandle(L"GameAssembly.dll")) {
         Sleep(200);
     }
 
-    DebugPrintLockA("[INFO] GameAssembly.dll loaded, Starting dump ...\n");
+    DebugPrintA("[INFO] GameAssembly.dll loaded, Starting dump ...\n");
 
     Sleep(5000);
     InitIl2CppFunctions();
@@ -47,6 +49,7 @@ DWORD WINAPI MainThread(LPVOID) {
 
     DumpCs(".\\output\\dump.cs");
     DumpJsonOutputToFile(".\\output\\script.json");
+	DumpMetaFile(".\\output\\global-metadata.dat");
 
     return 0;
 }
