@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "MetaDumper.h"
 #include <filesystem>
 #include <windows.h>
@@ -13,6 +13,9 @@
 #if METADATA_MANUAL_ADDRESS
 #define S_GLOBAL_METADATA_PTR 0x7213798
 #endif
+
+static void* s_GlobalMetadata = nullptr;
+static std::once_flag flag;
 
 void* ScanGlobalMetadata()
 {
@@ -34,21 +37,58 @@ void* ScanGlobalMetadata()
             uint8_t* base = (uint8_t*)mbi.BaseAddress;
             size_t size = mbi.RegionSize;
 
-            for (size_t i = 0; i + 4 < size; i++)
+            for (size_t i = 0; i + 0x20 < size; i++)
             {
-                if (base[i] == 175 && base[i + 1] == 27 && base[i + 2] == 177 &&base[i + 3] == 250)
-                {
-                    auto* header = (Il2CppGlobalMetadataHeader*)(base + i);
+                uint8_t* p = base + i;
 
-                    if (header->version >= 10 && header->version <= 50 &&
-                        header->stringOffset > 0 &&
-                        header->typeDefinitionsOffset > 0 &&
-                        header->methodsOffset > 0 &&
-                        header->imagesOffset > 0)
+                __try
+                {
+                    if (*(int32_t*)p != 4205910959u)
+                        continue;
+
+                    int32_t version = *(int32_t*)(p + 4);
+                    if (version < 20 || version > 40)
+                        continue;
+
+                    int32_t headerSize = *(int32_t*)(p + 8);
+                    if (headerSize < 0x80 || headerSize > 0x400)
+                        continue;
+
+                    bool ok = true;
+                    int32_t nextOffset = headerSize;
+
+                    for (int32_t off = 0x8; off + 4 < headerSize; off += 8)
                     {
-                        printf("[MetaDumper] Found GlobalMetadata: %p version=%d\n", (void*)header, header->version);
-                        return header;
+                        int32_t curOffset = *(int32_t*)(p + off);
+                        int32_t curSize = *(int32_t*)(p + off + 4);
+
+                        if (curOffset < headerSize)
+                            continue;
+
+                        if (curSize < 0)
+                        {
+                            ok = false;
+                            break;
+                        }
+
+                        if (curOffset < nextOffset)
+                        {
+                            ok = false;
+                            break;
+                        }
+
+                        if (curSize > 0)
+                            nextOffset = curOffset + curSize;
                     }
+
+                    if (!ok)
+                        continue;
+
+                    return p;
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                {
+                    continue;
                 }
             }
         }
@@ -61,29 +101,39 @@ void* ScanGlobalMetadata()
 
 void* GetGlobalMetadata()
 {
+    std::call_once(flag, []() {
 #if METADATA_MANUAL_ADDRESS
-    void** pGlobalMetadata = (void**)(GetModuleBase() + S_GLOBAL_METADATA_PTR);
+        void** pGlobalMetadata = (void**)(GetModuleBase() + S_GLOBAL_METADATA_PTR);
 
-    __try
-    {
-        if (!pGlobalMetadata || !*pGlobalMetadata)
-            return nullptr;
-
-        Il2CppGlobalMetadataHeader* header = (Il2CppGlobalMetadataHeader*)(*pGlobalMetadata);
-
-        DebugPrintA("[MetaDumper] Using manual s_GlobalMetadata: var=%p value=%p version=%d\n",
-            (void*)pGlobalMetadata, (void*)header, header->version);
-
-        return header;
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        DebugPrintA("[ERROR] Manual s_GlobalMetadata pointer invalid\n");
-        return nullptr;
-    }
+        __try
+        {
+            if (pGlobalMetadata && *pGlobalMetadata)
+            {
+                cachedHeader = (Il2CppGlobalMetadataHeader*)(*pGlobalMetadata);
+                DebugPrintA("[MetaDumper] Using manual s_GlobalMetadata: var=%p value=%p version=%d\n",
+                    (void*)pGlobalMetadata, (void*)cachedHeader, cachedHeader->version);
+            }
+            else
+            {
+                DebugPrintA("[ERROR] Manual s_GlobalMetadata pointer invalid\n");
+                cachedHeader = nullptr;
+            }
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            DebugPrintA("[ERROR] Manual s_GlobalMetadata pointer invalid (exception)\n");
+            cachedHeader = nullptr;
+        }
 #else
-    return ScanGlobalMetadata();
+        s_GlobalMetadata = ScanGlobalMetadata();
+        if (s_GlobalMetadata)
+            DebugPrintA("[MetaDumper] Found GlobalMetadata: %p version=%d\n", s_GlobalMetadata, ((Il2CppGlobalMetadataHeader*)s_GlobalMetadata)->version);
+        else
+            DebugPrintA("[MetaDumper] Failed to find GlobalMetadata\n");
 #endif
+        });
+
+    return s_GlobalMetadata;
 }
 
 size_t CalculateMetadataSize(const Il2CppGlobalMetadataHeader* header)
@@ -142,7 +192,7 @@ bool DumpMetaFile(const std::string& path)
 
     size_t metaSize = CalculateMetadataSize(header);
 
-    DebugPrintA("[MetaDumper] Metadata size = 0x%zx\n", metaSize);
+    DebugPrintA("[MetaDumper] Metadata size = %zu bytes\n", metaSize);
 
     std::filesystem::path filePath(path);
     std::filesystem::path directory = filePath.parent_path();
@@ -161,7 +211,7 @@ bool DumpMetaFile(const std::string& path)
     file.write(reinterpret_cast<const char*>(header), metaSize);
     file.close();
 
-    DebugPrintA("[MetaDumper] Dumped global-metadata.dat (%zu bytes)\n", metaSize);
+    DebugPrintA("[MetaDumper] Dumped global-metadata.dat\n");
 
     return true;
 }
