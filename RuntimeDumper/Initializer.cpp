@@ -47,9 +47,10 @@ DWORD WINAPI MainThread(LPVOID) {
         return 1;
     }
 
-    DumpCs(".\\output\\dump.cs");
-    DumpJsonOutputToFile(".\\output\\script.json");
-	DumpMetaFile(".\\output\\global-metadata.dat");
+ //   DumpCs(".\\output\\dump.cs");
+ //   DumpJsonOutputToFile(".\\output\\script.json");
+	//DumpMetaFile(".\\output\\global-metadata.dat");
+    GetCodeRegistration();
 
     return 0;
 }
