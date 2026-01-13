@@ -481,6 +481,81 @@ void DumpSections(const SectionHelper& s)
     dump("BSS", s.bss);
 }
 
+uintptr_t GetCodeRegistration2()
+{
+    auto* header = reinterpret_cast<const Il2CppGlobalMetadataHeader*>(GetGlobalMetadata());
+    if (!header)
+        return 0;
+
+    Metadata metadata = ParseMetadata();
+    const int imageCount = (int)metadata.imageCount;
+    const int il2cppVersion = header->version;
+    const size_t PTR = sizeof(uintptr_t);
+
+    uintptr_t moduleBase = GetModuleBase();
+    SectionHelper helper = GetSectionHelper(moduleBase);
+
+    // 扫描 "mscorlib.dll\0"
+    for (auto& sec : helper.data)
+    {
+        auto hits = FindBytesInSection(sec, featureBytes);
+
+        for (auto stringVA : hits)
+        {
+            // CodeGenModule.name -> "mscorlib.dll"
+            auto nameRefs = FindReference(helper.data, stringVA);
+
+            for (auto nameRefVA : nameRefs)
+            {
+                // CodeGenModules[i] -> CodeGenModule*
+                auto moduleRefs = FindReference(helper.data, nameRefVA);
+
+                for (auto codeGenModuleVA : moduleRefs)
+                {
+                    if (il2cppVersion >= 27)
+                    {
+                        // mscorlib.dll 在末尾
+                        for (int i = imageCount - 1; i >= 0; --i)
+                        {
+                            uintptr_t candidate = codeGenModuleVA - (uintptr_t)i * PTR;
+
+                            auto codeRegRefs = FindReference(helper.data, candidate);
+                            for (auto codeRegPtr : codeRegRefs)
+                            {
+                                uintptr_t countAddr = codeRegPtr - PTR;
+                                if (!CheckPointerRange(helper.data, countAddr))
+                                    continue;
+
+                                uintptr_t count = *(uintptr_t*)countAddr;
+                                if (count != (uintptr_t)imageCount)
+                                    continue;
+
+                                return codeRegPtr - PTR * 14;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // < 27：mscorlib.dll 在开头
+                        for (int i = 0; i < imageCount; ++i)
+                        {
+                            uintptr_t candidate = codeGenModuleVA - (uintptr_t)i * PTR;
+
+                            auto codeRegRefs = FindReference(helper.data, candidate);
+                            for (auto codeRegPtr : codeRegRefs)
+                            {
+                                return codeRegPtr - PTR * 13;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
 void GetCodeRegistration() {
     auto* header = reinterpret_cast<const Il2CppGlobalMetadataHeader*>(GetGlobalMetadata());
 
@@ -489,9 +564,9 @@ void GetCodeRegistration() {
     size_t typeCount = metadata.typeCount;
     size_t imageCount = metadata.imageCount;
 
-    printf("MethodDefs count: %zu\n", methodCount);
-    printf("TypeDefs count: %zu\n", typeCount);
-    printf("ImageDefs count: %zu\n", imageCount);
+    DebugPrintA("[MetaDumper] MethodDefs count: %zu\n", methodCount);
+    DebugPrintA("[MetaDumper] TypeDefs count: %zu\n", typeCount);
+    DebugPrintA("[MetaDumper] ImageDefs count: %zu\n", imageCount);
 
     uintptr_t moduleBase = GetModuleBase();
     SectionHelper helper = GetSectionHelper(moduleBase);
@@ -501,11 +576,10 @@ void GetCodeRegistration() {
     if (codeReg)
     {
         uintptr_t rva = codeReg - moduleBase;
-        printf("CodeRegistration found at: VA = 0x%zx, RVA = 0x%zx\n", codeReg, rva);
+        DebugPrintA("[MetaDumper] CodeRegistration found at: VA = 0x%zx, RVA = 0x%zx\n", codeReg, rva);
     }
     else
     {
-        printf("CodeRegistration not found!\n");
+        DebugPrintA("[MetaDumper] CodeRegistration not found!\n");
     }
 }
-
