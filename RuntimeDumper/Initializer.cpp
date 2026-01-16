@@ -7,6 +7,11 @@
 #include "MetaDumper.h"
 #include "ProtoDumper.h"
 
+#include "CSharpRender2.h"
+#include "CSharpRender3.h"
+
+#define DUMPCS_RENDER 1
+
 void TestPrintAllImageNames()
 {
     Il2CppDomain* domain = il2cpp_domain_get();
@@ -48,7 +53,16 @@ DWORD WINAPI MainThread(LPVOID) {
         return 1;
     }
 
+#if DUMPCS_RENDER == 1
     DumpCs(".\\output\\dump.cs");
+#elif DUMPCS_RENDER == 2
+    DumpCs2(".\\output\\dump.cs");
+#elif DUMPCS_RENDER == 3
+    DumpCs3(".\\output\\dump.cs");
+#else
+#error "Unknown DUMPCS_RENDER value"
+#endif
+
     DumpJsonOutputToFile(".\\output\\script.json");
 	DumpMetaFile(".\\output\\global-metadata.dat");
     GetCodeRegistration();

@@ -446,7 +446,7 @@ std::string DumpLiteralValue(FieldInfo* field)
     {
         Il2CppString* s;
         il2cpp_field_static_get_value(field, &s);
-        os << "\"" << AsciiEscapeToEscapeLiterals(Utf16ToUtf8(Il2cppToWString(s))) << "\"";
+        os << "\"" << AsciiEscapeToEscapeLiterals(Utf16ToUtf8(Il2CppToWString(s))) << "\"";
         break;
     }
     default:
@@ -719,6 +719,6 @@ void DumpCs(std::string path)
     }
     else 
     {
-        DebugPrintA("[ERROR] Failed to open file for writing: %s\n", path);
+        DebugPrintA("[ERROR] Failed to open file for writing: %s\n", path.c_str());
     }
 }

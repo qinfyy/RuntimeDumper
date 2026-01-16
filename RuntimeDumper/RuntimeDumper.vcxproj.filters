@@ -105,6 +105,12 @@
     <ClInclude Include="ProtoDumper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CSharpRender2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CSharpRender3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -138,6 +144,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ProtoDumper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSharpRender2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSharpRender3.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

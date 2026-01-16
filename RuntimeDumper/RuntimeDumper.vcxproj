@@ -164,6 +164,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSharpRender3.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="il2cpp\vm\GlobalMetadataFileInternals.h" />
     <ClInclude Include="Initializer.h" />
@@ -190,10 +191,12 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrintHelper.h" />
     <ClInclude Include="ProtoDumper.h" />
+    <ClInclude Include="CSharpRender2.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CSharpRender3.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Initializer.cpp" />
     <ClCompile Include="Il2CppDumper.cpp" />
@@ -208,6 +211,7 @@
     </ClCompile>
     <ClCompile Include="PrintHelper.cpp" />
     <ClCompile Include="ProtoDumper.cpp" />
+    <ClCompile Include="CSharpRender2.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Version.cpp" />
   </ItemGroup>

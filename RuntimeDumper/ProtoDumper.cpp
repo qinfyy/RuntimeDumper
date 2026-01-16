@@ -270,14 +270,14 @@ std::string EnumToString(Il2CppClass* enumClass, int value)
 }
 
 // 获取 FieldType 名称
-std::wstring GetFieldTypeString(Il2CppObject* field)
+std::string GetFieldTypeString(Il2CppObject* field)
 {
     if (!field)
-        return L"unknown";
+        return "unknown";
 
     Il2CppClass* fieldClass = il2cpp_object_get_class(field);
     if (!fieldClass)
-        return L"unknown";
+        return "unknown";
 
     // 获取 FieldType 枚举值
     Il2CppObject* fieldTypeValue = nullptr;
@@ -295,113 +295,113 @@ std::wstring GetFieldTypeString(Il2CppObject* field)
             Il2CppException* exc = nullptr;
             fieldTypeValue = il2cpp_runtime_invoke(method, field, nullptr, &exc);
             if (exc || !fieldTypeValue)
-                return L"unknown";
+                return "unknown";
             break;
         }
     }
 
     if (!fieldTypeValue)
-        return L"unknown";
+        return "unknown";
 
     // 获取 FieldType 枚举名称
     Il2CppClass* fieldTypeEnumClass = FindClass(nullptr, "Google.Protobuf.Reflection", "FieldType");
     if (!fieldTypeEnumClass)
-        return L"unknown";
+        return "unknown";
 
     int fieldTypeInt = *(int*)il2cpp_object_unbox(fieldTypeValue);
     std::string fieldTypeName = EnumToString(fieldTypeEnumClass, fieldTypeInt);
     if (fieldTypeName.empty())
-        return L"unknown";
+        return "unknown";
 
     for (auto& c : fieldTypeName) c = tolower(c); // 转小写
-    std::wstring wFieldType = Utf8ToUtf16(fieldTypeName);
+    std::string FieldType = fieldTypeName;
 
     // 处理基本类型
-    if (wFieldType == L"int32") return L"int32";
-    if (wFieldType == L"int64") return L"int64";
-    if (wFieldType == L"uint32") return L"uint32";
-    if (wFieldType == L"uint64") return L"uint64";
-    if (wFieldType == L"sint32") return L"sint32";
-    if (wFieldType == L"sint64") return L"sint64";
-    if (wFieldType == L"fixed32") return L"fixed32";
-    if (wFieldType == L"fixed64") return L"fixed64";
-    if (wFieldType == L"sfixed32") return L"sfixed32";
-    if (wFieldType == L"sfixed64") return L"sfixed64";
-    if (wFieldType == L"float") return L"float";
-    if (wFieldType == L"double") return L"double";
-    if (wFieldType == L"bool") return L"bool";
-    if (wFieldType == L"string") return L"string";
-    if (wFieldType == L"bytes") return L"bytes";
+    if (FieldType == "int32") return "int32";
+    if (FieldType == "int64") return "int64";
+    if (FieldType == "uint32") return "uint32";
+    if (FieldType == "uint64") return "uint64";
+    if (FieldType == "sint32") return "sint32";
+    if (FieldType == "sint64") return "sint64";
+    if (FieldType == "fixed32") return "fixed32";
+    if (FieldType == "fixed64") return "fixed64";
+    if (FieldType == "sfixed32") return "sfixed32";
+    if (FieldType == "sfixed64") return "sfixed64";
+    if (FieldType == "float") return "float";
+    if (FieldType == "double") return "double";
+    if (FieldType == "bool") return "bool";
+    if (FieldType == "string") return "string";
+    if (FieldType == "bytes") return "bytes";
 
     // enum 类型
-    if (wFieldType == L"enum")
+    if (FieldType == "enum")
     {
         // 获取 EnumDescriptor
         const MethodInfo* getEnumType = il2cpp_class_get_method_from_name(fieldClass, "get_EnumType", 0);
-        if (!getEnumType) return L"unknown_enum";
+        if (!getEnumType) return "unknown_enum";
 
         Il2CppException* exc = nullptr;
         Il2CppObject* enumDescriptor = il2cpp_runtime_invoke(getEnumType, field, nullptr, &exc);
-        if (exc || !enumDescriptor) return L"unknown_enum";
+        if (exc || !enumDescriptor) return "unknown_enum";
 
         // 调用 EnumDescriptor.get_Name()
         Il2CppClass* enumDescClass = il2cpp_object_get_class(enumDescriptor);
         const MethodInfo* getNameMethod = il2cpp_class_get_method_from_name(enumDescClass, "get_Name", 0);
-        if (!getNameMethod) return L"unknown_enum";
+        if (!getNameMethod) return "unknown_enum";
 
         exc = nullptr;
         Il2CppObject* nameObj = il2cpp_runtime_invoke(getNameMethod, enumDescriptor, nullptr, &exc);
-        if (exc || !nameObj) return L"unknown_enum";
+        if (exc || !nameObj) return "unknown_enum";
 
-        return Il2cppToWString((Il2CppString*)nameObj);
+        return Il2CppToUtf8String((Il2CppString*)nameObj);
     }
 
-    if (wFieldType == L"message")
+    if (FieldType == "message")
     {
         // 获取 MessageDescriptor
         const MethodInfo* getMessageType = il2cpp_class_get_method_from_name(fieldClass, "get_MessageType", 0);
-        if (!getMessageType) return L"unknown_message";
+        if (!getMessageType) return "unknown_message";
 
         Il2CppException* exc = nullptr;
         Il2CppObject* msgDescriptor = il2cpp_runtime_invoke(getMessageType, field, nullptr, &exc);
-        if (exc || !msgDescriptor) return L"unknown_message";
+        if (exc || !msgDescriptor) return "unknown_message";
 
         // 调用 MessageDescriptor.get_Name()
         Il2CppClass* msgDescClass = il2cpp_object_get_class(msgDescriptor);
         const MethodInfo* getNameMethod = il2cpp_class_get_method_from_name(msgDescClass, "get_Name", 0);
-        if (!getNameMethod) return L"unknown_message";
+        if (!getNameMethod) return "unknown_message";
 
         exc = nullptr;
         Il2CppObject* nameObj = il2cpp_runtime_invoke(getNameMethod, msgDescriptor, nullptr, &exc);
-        if (exc || !nameObj) return L"unknown_message";
+        if (exc || !nameObj) return "unknown_message";
 
-        return Il2cppToWString((Il2CppString*)nameObj);
+        return Il2CppToUtf8String((Il2CppString*)nameObj);
     }
 
-    return wFieldType;
+    return FieldType;
 }
 
 // 获取 protobuf 字段名字
-std::wstring GetFieldName(Il2CppObject* field)
+std::string GetFieldName(Il2CppObject* field)
 {
     if (!field)
-        return L"unknown";
+        return "unknown";
 
     Il2CppClass* klass = il2cpp_object_get_class(field);
     if (!klass)
-        return L"unknown";
+        return "unknown";
 
     // 找 Name 属性
     const MethodInfo* getNameMethod = il2cpp_class_get_method_from_name(klass, "get_Name", 0);
     if (!getNameMethod)
-        return L"unknown";
+        return "unknown";
 
     Il2CppException* exc = nullptr;
     Il2CppObject* result = il2cpp_runtime_invoke(getNameMethod, field, nullptr, &exc);
     if (exc || !result)
-        return L"unknown";
+        return "unknown";
 
-    return Il2cppToWString((Il2CppString*)result);
+    return Il2CppToUtf8String((Il2CppString*)result);
 }
 
 // 获取 protobuf 字段编号
@@ -559,9 +559,9 @@ Il2CppObject* GetMessageDescriptor(Il2CppClass* messageClass)
     return nullptr;
 }
 
-std::wstring GetDescriptorName(Il2CppObject* descriptor)
+std::string GetDescriptorName(Il2CppObject* descriptor)
 {
-    if (!descriptor) return L"";
+    if (!descriptor) return "";
 
     Il2CppClass* klass = il2cpp_object_get_class(descriptor);
 
@@ -583,19 +583,19 @@ std::wstring GetDescriptorName(Il2CppObject* descriptor)
         Il2CppException* exc = nullptr;
         Il2CppObject* result = il2cpp_runtime_invoke(method, descriptor, nullptr, &exc);
         if (exc || !result)
-            return L"";
+            return "";
 
-        return Il2cppToWString((Il2CppString*)result);
+        return Il2CppToUtf8String((Il2CppString*)result);
     }
 
-    return L"";
+    return "";
 }
 
-std::wstring GetFieldDefinition(Il2CppObject* field)
+std::string GetFieldDefinition(Il2CppObject* field)
 {
-    if (!field) return L"";
+    if (!field) return "";
 
-    std::wstring fieldName = GetFieldName(field);
+    std::string fieldName = GetFieldName(field);
     int fieldNumber = GetFieldNumber(field);
 
     // 判断是否 Map
@@ -615,25 +615,25 @@ std::wstring GetFieldDefinition(Il2CppObject* field)
     {
         // 获取 MessageType，即 MapEntryDescriptor
         const MethodInfo* getMessageType = il2cpp_class_get_method_from_name(fieldClass, "get_MessageType", 0);
-        if (!getMessageType) return L"// Error: Map MessageType missing";
+        if (!getMessageType) return "// Error: Map MessageType missing";
 
         Il2CppException* exc = nullptr;
         Il2CppObject* mapEntryDescriptor = il2cpp_runtime_invoke(getMessageType, field, nullptr, &exc);
-        if (exc || !mapEntryDescriptor) return L"// Error: Map MessageType invoke failed";
+        if (exc || !mapEntryDescriptor) return "// Error: Map MessageType invoke failed";
 
         // 获取字段集合 FieldCollection
         Il2CppObject* mapFieldsCollection = GetFieldsCollection(mapEntryDescriptor);
-        if (!mapFieldsCollection) return L"// Error: Map FieldCollection missing";
+        if (!mapFieldsCollection) return "// Error: Map FieldCollection missing";
 
         auto mapFields = GetAllFields(mapEntryDescriptor);
         if (mapFields.size() < 2)
-            return L"// Error: Map fields count != 2";
+            return "// Error: Map fields count != 2";
 
         // 第一个是 key，第二个是 value
-        std::wstring keyType = GetFieldTypeString(mapFields[0]);
-        std::wstring valueType = GetFieldTypeString(mapFields[1]);
+        std::string keyType = GetFieldTypeString(mapFields[0]);
+        std::string valueType = GetFieldTypeString(mapFields[1]);
 
-        return L"map<" + keyType + L", " + valueType + L"> " + fieldName + L" = " + std::to_wstring(fieldNumber) + L";";
+        return "map<" + keyType + ", " + valueType + "> " + fieldName + " = " + std::to_string(fieldNumber) + ";";
     }
     else
     {
@@ -649,16 +649,16 @@ std::wstring GetFieldDefinition(Il2CppObject* field)
                 isRepeated = *(bool*)il2cpp_object_unbox(res);
         }
 
-        std::wstring typeStr = GetFieldTypeString(field);
-        std::wstring repeatedStr = isRepeated ? L"repeated " : L"";
+        std::string typeStr = GetFieldTypeString(field);
+        std::string repeatedStr = isRepeated ? "repeated " : "";
 
-        return repeatedStr + typeStr + L" " + fieldName + L" = " + std::to_wstring(fieldNumber) + L";";
+        return repeatedStr + typeStr + " " + fieldName + " = " + std::to_string(fieldNumber) + ";";
     }
 }
 
-std::wstring GetIndent(int indentLevel)
+std::string GetIndent(int indentLevel)
 {
-    return std::wstring(indentLevel * 4, L' ');
+    return std::string(indentLevel * 4, ' ');
 }
 
 std::vector<Il2CppObject*> GetAllNestedTypes(Il2CppObject* messageDescriptor)
@@ -737,11 +737,11 @@ std::vector<Il2CppObject*> GetAllEnumTypes(Il2CppObject* messageDescriptor)
     return result;
 }
 
-void GenerateEnumDefinitionByDescriptor(Il2CppObject* enumDescriptor, std::wstringstream& out, int indentLevel = 0)
+void GenerateEnumDefinitionByDescriptor(Il2CppObject* enumDescriptor, std::stringstream& out, int indentLevel = 0)
 {
     if (!enumDescriptor) return;
 
-    std::wstring indent = GetIndent(indentLevel);
+    std::string indent = GetIndent(indentLevel);
 
     Il2CppClass* descClass = il2cpp_object_get_class(enumDescriptor);
     if (!descClass) return;
@@ -754,11 +754,11 @@ void GenerateEnumDefinitionByDescriptor(Il2CppObject* enumDescriptor, std::wstri
     Il2CppObject* nameObj = il2cpp_runtime_invoke(getNameMethod, enumDescriptor, nullptr, &exc);
     if (exc || !nameObj) return;
 
-    std::wstring enumName = Il2cppToWString((Il2CppString*)nameObj);
+    std::string enumName = Il2CppToUtf8String((Il2CppString*)nameObj);
 
     // 输出注释
-    out << indent << L"// Enum Descriptor Generation\n";
-    out << indent << L"enum " << enumName << L" {\n";
+    out << indent << "// Enum Descriptor Generation\n";
+    out << indent << "enum " << enumName << " {\n";
 
     // 获取 Values
     const MethodInfo* getValuesMethod = il2cpp_class_get_method_from_name(descClass, "get_Values", 0);
@@ -796,34 +796,38 @@ void GenerateEnumDefinitionByDescriptor(Il2CppObject* enumDescriptor, std::wstri
             Il2CppObject* fNumObj = il2cpp_runtime_invoke(getFieldNumber, val, nullptr, &excValue);
             if (excValue || !fNameObj || !fNumObj) continue;
 
-            std::wstring fieldName = Il2cppToWString((Il2CppString*)fNameObj);
+            std::string fieldName = Il2CppToUtf8String((Il2CppString*)fNameObj);
             int fieldNumber = *(int*)il2cpp_object_unbox(fNumObj);
 
-            out << indent << L"    " << fieldName << L" = " << fieldNumber << L";\n";
+            out << indent << "    " << fieldName << " = " << fieldNumber << ";\n";
         }
     }
 
-    out << indent << L"}\n\n";
+    out << indent << "}\n\n";
 }
 
-void GenerateMessageDefinitionByDescriptor(Il2CppObject* descriptor, std::wstringstream& out, int indentLevel = 0)
+void GenerateMessageDefinitionByDescriptor(Il2CppObject* descriptor, std::stringstream& out, int indentLevel = 0)
 {
     if (!descriptor) return;
 
     // 获取 Message 名称
-    std::wstring name = GetDescriptorName(descriptor);
-    if (name.empty()) return;
+    std::string name = GetDescriptorName(descriptor);
+    if (name.empty()) {
+		DebugPrintA("[ProtoDump] Message descriptor has no name\n");
+		out << "// Error: Message descriptor has no name\n";
+        return;
+    }
 
     // 过滤 MapEntry 消息
     if (name.size() >= 5 && std::equal(name.end() - 5, name.end(), L"Entry"))
         return;
 
-    std::wstring indent = GetIndent(indentLevel);
+    std::string indent = GetIndent(indentLevel);
 
-    out << indent << L"// Message Descriptor Generation\n";
-    out << indent << L"message " << name << L" {\n";
+    out << indent << "// Message Descriptor Generation\n";
+    out << indent << "message " << name << " {\n";
 
-    // --- oneof + 普通字段 ---
+    // oneof + 普通字段
     auto fields = GetAllFields(descriptor);
     std::unordered_map<Il2CppObject*, std::vector<Il2CppObject*>> oneofGroups;
 
@@ -843,19 +847,19 @@ void GenerateMessageDefinitionByDescriptor(Il2CppObject* descriptor, std::wstrin
     for (auto& [oneofDesc, fieldList] : oneofGroups)
     {
         const MethodInfo* getName = il2cpp_class_get_method_from_name(il2cpp_object_get_class(oneofDesc), "get_Name", 0);
-        std::wstring oneofName = L"unknown_oneof";
+        std::string oneofName = "unknown_oneof";
         if (getName)
         {
             Il2CppException* exc = nullptr;
             Il2CppObject* nameObj = il2cpp_runtime_invoke(getName, oneofDesc, nullptr, &exc);
             if (!exc && nameObj)
-                oneofName = Il2cppToWString((Il2CppString*)nameObj);
+                oneofName = Il2CppToUtf8String((Il2CppString*)nameObj);
         }
 
-        out << indent << L"    oneof " << oneofName << L" {\n";
+        out << indent << "    oneof " << oneofName << " {\n";
         for (auto field : fieldList)
-            out << indent << L"        " << GetFieldDefinition(field) << L"\n";
-        out << indent << L"    }\n";
+            out << indent << "        " << GetFieldDefinition(field) << "\n";
+        out << indent << "    }\n\n";
     }
 
     for (auto field : fields)
@@ -869,7 +873,7 @@ void GenerateMessageDefinitionByDescriptor(Il2CppObject* descriptor, std::wstrin
         }
         if (containingOneof) continue;
 
-        out << indent << L"    " << GetFieldDefinition(field) << L"\n";
+        out << indent << "    " << GetFieldDefinition(field) << "\n";
     }
 
     // 嵌套枚举
@@ -882,20 +886,19 @@ void GenerateMessageDefinitionByDescriptor(Il2CppObject* descriptor, std::wstrin
     for (auto nested : nestedMessages)
         GenerateMessageDefinitionByDescriptor(nested, out, indentLevel + 1);
 
-    out << indent << L"}\n\n";
+    out << indent << "}\n\n";
 }
 
-void GenerateEnumDefinition(Il2CppClass* enumClass, std::wstringstream& out, int indentLevel = 0)
+void GenerateEnumDefinition(Il2CppClass* enumClass, std::stringstream& out, int indentLevel = 0)
 {
-    std::wstring indent = GetIndent(indentLevel);
+    std::string indent = GetIndent(indentLevel);
     std::string className = il2cpp_class_get_name(enumClass);
-    std::wstring wClassName = Utf8ToUtf16(className);
-    std::wstring wNsp = Utf8ToUtf16(enumClass->namespaze);
-    std::wstring wAsm = Utf8ToUtf16(enumClass->image->name);
+    std::string nsp = enumClass->namespaze;
+    std::string image = enumClass->image->name;
 
-    out << indent << L"// Class: " << wClassName << L", Namespaze: " << wNsp << L", Assembly: " << wAsm << L"\n";
-    out << indent << L"// Il2Cpp Class Generation\n";
-    out << indent << L"enum " << wClassName << L" {\n";
+    out << indent << "// Class: " << className << ", Namespaze: " << nsp << ", Assembly: " << image << "\n";
+    out << indent << "// Il2Cpp Class Generation\n";
+    out << indent << "enum " << className << " {\n";
 
     void* iter = nullptr;
     FieldInfo* field = nullptr;
@@ -903,21 +906,23 @@ void GenerateEnumDefinition(Il2CppClass* enumClass, std::wstringstream& out, int
     {
         if (!il2cpp_field_is_literal(field)) continue;
         const char* name = il2cpp_field_get_name(field);
-        if (!name) continue;
+        if (!name)
+            continue;
 
-        std::wstring wname = Utf8ToUtf16(name);
-        if (FIX_ENUM) wname = wClassName + L"_" + wname;
+        std::string strName(name);
+        if (FIX_ENUM)
+            strName = className + "_" + strName;
 
         int value;
         il2cpp_field_static_get_value(field, &value);
 
-        out << indent << L"    " << wname << L" = " << value << L";\n";
+        out << indent << "    " << name << " = " << value << ";\n";
     }
 
-    out << indent << L"}\n\n";
+    out << indent << "}\n\n";
 }
 
-void GenerateMessageDefinition(Il2CppClass* messageClass, std::wstringstream& out, int indentLevel = 0)
+void GenerateMessageDefinition(Il2CppClass* messageClass, std::stringstream& out, int indentLevel = 0)
 {
     if (!messageClass) return;
 
@@ -925,12 +930,11 @@ void GenerateMessageDefinition(Il2CppClass* messageClass, std::wstringstream& ou
     if (!descriptor) return;
 
     std::string className = il2cpp_class_get_name(messageClass);
-    std::wstring wClassName = Utf8ToUtf16(className);
-    std::wstring wNsp = Utf8ToUtf16(messageClass->namespaze ? messageClass->namespaze : "");
-    std::wstring wAsm = Utf8ToUtf16(messageClass->image ? messageClass->image->name : "");
+    std::string nsp = messageClass->namespaze ? messageClass->namespaze : "";
+    std::string image = messageClass->image ? messageClass->image->name : "";
 
-    std::wstring indent = GetIndent(indentLevel);
-    out << indent << L"// Class: " << wClassName << L", Namespaze: " << wNsp << L", Assembly: " << wAsm << L"\n";
+    std::string indent = GetIndent(indentLevel);
+    out << indent << "// Class: " << className << ", Namespaze: " << nsp << ", Assembly: " << image << "\n";
 
     // 解析 descriptor 生成 proto
     GenerateMessageDefinitionByDescriptor(descriptor, out, indentLevel);
@@ -945,7 +949,7 @@ void DumpProtos(std::string path)
         std::filesystem::create_directories(directory);
     }
 
-    std::wofstream file(path);
+    std::ofstream file(path);
     if (file.is_open()) {
         if (!HasGoogleProtobuf())
         {
@@ -956,9 +960,9 @@ void DumpProtos(std::string path)
         auto messages = GetAllProtobufMessages();
         auto enums = GetAllProtobufEnums();
 
-        std::wstringstream ss;
-        ss << L"// Runtime Dumper\n\n";
-        ss << L"syntax = \"proto3\";\n\n";
+        std::stringstream ss;
+        ss << "// Runtime Dumper\n\n";
+        ss << "syntax = \"proto3\";\n\n";
 
         for (auto e : enums) {
             DebugPrintA("[ProtoDump] Enum: %s.%s\n", e->namespaze ? e->namespaze : "", e->name);

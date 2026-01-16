@@ -5,7 +5,9 @@
 #include <il2cpp-class-internals.h>
 #include <il2cpp-object-internals.h>
 
-std::wstring Il2cppToWString(Il2CppString* str);
+std::wstring Il2CppToWString(Il2CppString* str);
+
+std::string Il2CppToUtf8String(Il2CppString* str);
 
 bool ReplaceIl2CppStringChars(Il2CppString* target, const std::wstring& ws);
 
