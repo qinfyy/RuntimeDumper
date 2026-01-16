@@ -102,6 +102,9 @@
     <ClInclude Include="il2cpp\vm\GlobalMetadataFileInternals.h">
       <Filter>头文件\il2cpp\vm</Filter>
     </ClInclude>
+    <ClInclude Include="ProtoDumper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -132,6 +135,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MetaDumper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ProtoDumper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

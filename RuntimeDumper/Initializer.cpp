@@ -5,6 +5,7 @@
 #include "Il2CppDumper.h"
 #include "JsonGenerator.h"
 #include "MetaDumper.h"
+#include "ProtoDumper.h"
 
 void TestPrintAllImageNames()
 {
@@ -51,6 +52,7 @@ DWORD WINAPI MainThread(LPVOID) {
     DumpJsonOutputToFile(".\\output\\script.json");
 	DumpMetaFile(".\\output\\global-metadata.dat");
     GetCodeRegistration();
+    DumpProtos(".\\output\\dump.proto");
 
     return 0;
 }
