@@ -68,5 +68,7 @@ DWORD WINAPI MainThread(LPVOID) {
     GetCodeRegistration();
     DumpProtos(".\\output\\dump.proto");
 
+	DebugPrintA("[INFO] All done.\n");
+
     return 0;
 }

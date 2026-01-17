@@ -949,14 +949,14 @@ void DumpProtos(std::string path)
         std::filesystem::create_directories(directory);
     }
 
+    if (!HasGoogleProtobuf())
+    {
+        DebugPrintA("[ProtoDump] Google.Protobuf not found, skip proto dump\n");
+        return;
+    }
+
     std::ofstream file(path);
     if (file.is_open()) {
-        if (!HasGoogleProtobuf())
-        {
-            DebugPrintA("[ProtoDump] Google.Protobuf not found, skip proto dump\n");
-            return;
-        }
-
         auto messages = GetAllProtobufMessages();
         auto enums = GetAllProtobufEnums();
 
